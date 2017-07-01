@@ -24,13 +24,15 @@ app.listen(app.get('port'), function() {
 
 //get all restaurants
 router.get('/restaurant', function(request, response, next){
-    pg.connect(conString, function(err, client, done){
-        if(err){
-            return console.error('error fetching client from pool', err);
+    var client = new pg.Client(conString);
+    client.connect(function(err){
+        if (err){
+            console.log("error connecting to database:");
+            console.log(err);
         }
         console.log("connected to database");
         client.query('SELECT * FROM restaurants', function (err, result){
-            done();
+           
             if (err){
                 return console.error('error running query', err);
             }
