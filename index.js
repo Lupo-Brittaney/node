@@ -9,7 +9,7 @@ var pg = require('pg');
 const conString = "postgres://postgres:degree4me@localhost:5432/postgres";
 
 
-app.set('port', (process.env.PORT || 5000));
+app.set('port', (process.env.PORT || 8080));
 
 app.use(express.static(__dirname + '/public'));
 
@@ -24,7 +24,7 @@ app.listen(app.get('port'), function() {
 
 //get all restaurants
 router.get('/restaurant', function(request, response, next){
-    var client = new pg.Client(conString);
+    var client = new pg.Client(process.env.DATABASE_URL);
     client.connect(function(err){
         if (err){
             console.log("error connecting to database:");
