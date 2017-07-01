@@ -5,7 +5,7 @@ var app = express();
 var router= express.Router();
 
 //require postgress 
-var pg = require("pg");
+var pg = require('pg');
 const conString = "postgres://postgres:degree4me@localhost:5432/postgres";
 
 
