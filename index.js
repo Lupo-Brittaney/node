@@ -6,7 +6,14 @@ var router= express.Router();
 
 //require postgress 
 var pg = require('pg');
-const conString = "postgres://postgres:degree4me@localhost:5432/postgres";
+
+var
+conString = process.env.DATABASE_URL;
+console.log(conString);
+if (conString == null){
+    conString = "postgres://postgres:degree4me@localhost:5432/postgres";
+    console.log('connected local');
+};
 
 
 app.set('port', (process.env.PORT || 8080));
@@ -24,11 +31,9 @@ app.listen(app.get('port'), function() {
 
 //get all restaurants
 router.get('/restaurant', function(request, response, next){
-    var client = new pg.Client(process.env.DATABASE_URL);
-    client.connect(function(err){
-        if (err){
-            console.log("error connecting to database:");
-            console.log(err);
+    pg.connect(conString, function(err, client, done){
+        if(err){
+            return console.error('error fetching client from pool', err);
         }
         console.log("connected to database");
         client.query('SELECT * FROM restaurants', function (err, result){
