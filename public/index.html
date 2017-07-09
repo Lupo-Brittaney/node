@@ -1,15 +1,129 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Food Finder</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
 </head>
 <body>
+    
+    <header>
+        <h1><a href="/">Food Finder</a></h1>
+    <h2 id="restaurant"></h2>
+    <h3 id="food"></h3>
+    </header>
+    <main>
+        <aside >
+            <h4>Restaurants</h4>
+            <p id ="returnRest"></p>
+            <form>
+                <input type="text" id="restName">
+                <button type="button" id="name" onclick="addRest()">Add</button>
+            </form>
 
-    
-    
+        </aside>
+        <div id="return"></div>
+
+    </main>
     
     <script>
+        // 
+        var message =[]; 
+        var xhr = new XMLHttpRequest(); 
+        var target= '/restaurant';
+        xhr.onreadystatechange = function(){
+            if (xhr.readyState === 4 && xhr.status == 200){
+                 var restaurants =  JSON.parse(xhr.responseText);
+                 console.log(restaurants);
+                for (var i =0; i < restaurants.rows.length; i++){
+                    var rest= restaurants.rows[i].name;
+                    var id= restaurants.rows[i].id;
+                    message += "<li><a onclick = getFood("+id+"); href= #>" + rest + "</a></li>";
 
+
+                }
+              document.getElementById("return").innerHTML = message;
+             }
+        };
+
+        xhr.open('GET', target);
+        xhr.send();
+        
+
+    
+        function getFood(restId){
+            var resName= "";
+            var list = [];
+            var xhr = new XMLHttpRequest();
+            var target = '/restaurant/'+restId+'/food';
+            xhr.onreadystatechange = function(){
+                if (xhr.readyState === 4 && xhr.status == 200){
+                    var foods = JSON.parse(xhr.responseText);
+                    console.log(foods);
+                    for (var i =0; i <foods.rows.length; i++){
+                        var food = foods.rows[i].name;
+                        var id = foods.rows[i].id;
+                        list += "<li><a onclick = getDetails("+id + "," + restId+"); href= #>" + food + "</a></li>";
+                    }
+                    resName =foods.rows[0].resname;
+                    console.log(resName);
+                }document.getElementById("return").innerHTML = list;
+                document.getElementById("restaurant").innerHTML = resName;
+            }
+            
+            xhr.open('GET', target);
+            xhr.send();
+            
+        }
+         function getDetails(foodId, restId){
+            var table = [];
+            var foodName="";
+            var xhr = new XMLHttpRequest();
+            var target = '/restaurant/'+restId+'/food/'+foodId;
+             console.log(target);
+            xhr.onreadystatechange = function(){
+                if (xhr.readyState === 4 && xhr.status == 200){
+                    var details = JSON.parse(xhr.responseText);
+                    console.log(details);
+                    table = "<table><tr><th>Name</th><th>Soy</th><th>Dairy</th><th>Gluten</th><th> Rating</th></tr>"
+                    for (var i =0; i <details.rows.length; i++){
+                        var food = details.rows[i].name;
+                        var soy = details.rows[i].soy;
+                        var dairy = details.rows[i].dairy;
+                        var gluten = details.rows[i].gluten;
+                        var rating = details.rows[i].rating;
+                        
+                        table += "<tr><td>" + food + "</td><td>" + soy +"</td><td>"+ dairy+"</td><td>"+gluten+"</td><td>"+rating+"</td></tr>"; 
+                    }
+                table += "</table>";
+                foodName= details.rows[0].name;
+                }document.getElementById("return").innerHTML = table;
+                document.getElementById("food").innerHTML = foodName;
+            }
+            
+            xhr.open('GET', target);
+            xhr.send();
+            
+        }   
+         function addRest(){
+             console.log('n addRest function');
+            var name= document.getElementById("restName").value;
+             console.log(name);
+            var xhr = new XMLHttpRequest();
+            var target = '/restaurant/';
+            xhr.onreadystatechange = function(){
+                if (xhr.readyState === 4 && xhr.status == 200){
+                    console.log(added);
+                    }
+
+                }
+            
+            
+            xhr.open('POST', target+ "?"+ name);
+            xhr.send();
+            
+        }    
     </script>
+
 </body>
 
 
