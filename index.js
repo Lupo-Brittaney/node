@@ -13,6 +13,11 @@ if (conString == null){
     conString = "postgres://postgres:degree4me@localhost:5432/postgres";
     console.log('connected local');
 };
+var bodyParser = require('body-parser')
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
 
 app.set('port', (process.env.PORT || 8080));
 
@@ -35,31 +40,35 @@ router.get('/restaurant', function(request, response, next){
         }
         console.log("connected to database to get rest");
         client.query('SELECT * FROM restaurants', function (err, result){
-           
+          
             if (err){
                 return console.error('error running query', err);
             }
             response.status(200).json(result);
+           
 
         });
     });
 });
 
 //create a new restaurant
-router.post('/restaurant', function(require, request, next){
+router.post('/restaurant', function(request, response, next){
     pg.connect(conString, function(err, client, done){
         if(err){
             return console.error('error fetching client from pool', err);
         }
         console.log("connected to database to add rest");
-        console.log(request.body.name);
-    //    client.query('INSERT INTO restaurants(name) VALUES($1) returning id', //[request.body.name], function(err, result){
-      //      done();
-        //    if(err){
-           //     return console.error('error running query', err);
-          //  }
-          //  response.send(result);
-        //});
+        console.log(request.body);
+        console.log(request.body.resname);
+        
+        client.query('INSERT INTO restaurants(name) VALUES($1) returning id', [request.body.resname], function(err, result){
+            done();
+            if(err){
+                return console.error('error running query', err);
+            }
+            response.send(result);
+            
+        });
     });
 });
 
@@ -87,8 +96,14 @@ router.delete('/restaurant/:id', function(request, response){
        if(err){
            return console.error('error fetching client from pool', err);
        } 
-       console.log("connected to database");
-        client.query('SELECT * FROM restaurants WHERE id =$1', [request.params.id], function(err, result){
+       console.log("connected to database for delete");
+        client.query('DELETE FROM food WHERE rest_id =$1', [request.body.rest_id], function(err, result){
+            done();
+            if(err){
+                return console.error('error running query', err);
+            }
+        });
+        client.query('DELETE FROM restaurants WHERE id =$1', [request.body.rest_id], function(err, result){
             done();
             if(err){
                 return console.error('error running query', err);
@@ -122,11 +137,11 @@ router.post('/restaurant/:id/food', function(request, response){
         if (err){
             return console.error('error fetching client from pool', err);
         }
-        console.log("connected to database");
+        console.log("connected to database insert food");
         client.query('INSERT INTO food(name, rest_id, dairy, soy, gluten, rating) VALUES($1, $2, $3, $4, $5, $6) returning id', [request.body.name, request.body.rest_id, request.body.dairy, request.body.soy, request.body.gluten, request.body.rating], function(err, result){
             done();
             if(err){
-               return concole.error('error running query', err);
+               return console.error('error running query', err);
             }
             response.status(200).json(result);
         });
