@@ -38,14 +38,7 @@ aside{
     padding:5px;
     
 }
-#leftaside {
 
-    
-}
-#rightaside {
-    
-    
-}
 #return{
    height:100%;
     flex-basis:60%;
@@ -57,13 +50,27 @@ li{
 }
 header a{
     color:#e2dac4;
+    text-decoration:none;
 }
-a:link{
+header a:hover{
+    text-decoration:underline;
+}
+#return a:link{
     text-decoration: none;
+    color:#051838;
     
 }
-a:visited{
+#return a:visited{
     text-decoration: none;
+    color: #051838;
+}
+#return a:hover{
+    text-decoration:underline;
+    color:#4d658d;
+    
+}
+#return h2{
+    color: #051838;
 }
 form{
     padding:5%;
