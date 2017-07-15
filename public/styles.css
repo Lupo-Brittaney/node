@@ -52,6 +52,9 @@ header a{
     color:#e2dac4;
     text-decoration:none;
 }
+header h3{
+    color:#e2dac4;
+}
 header a:hover{
     text-decoration:underline;
 }
