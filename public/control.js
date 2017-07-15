@@ -19,6 +19,7 @@
                 document.getElementById("resname1").innerHTML = select;  
                 document.getElementById("resname2").innerHTML = select; 
                 document.getElementById("food").innerHTML = "";
+                document.getElementById("restaurant").innerHTML = "";
                 }
             }
 
@@ -66,29 +67,34 @@
                     var details = JSON.parse(xhr.responseText);
                     console.log(details);
                     var soy = details.rows[0].soy;
-                    if (soy ==false){
-                        soy = "None";
-                    }else if (soy ==true){
-                        soy = "Yes";
-                    }else {
-                        soy= "Error getting details";
-                    }
                     var dairy = details.rows[0].dairy;
-                    if (dairy ==false){
+                     var gluten = details.rows[0].gluten;
+                    console.log(gluten);
+                    console.log(dairy);
+                    console.log(soy);
+                    if (soy === false){
+                        soy = "None";
+                    }else if (soy === true){
+                        soy = "Yes";
+                    }else{
+                        soy="Error"
+                    };
+                    
+                    if (dairy === false){
                         dairy = "None";
-                    }else if (soy ==true){
+                    }else if (dairy === true){
                         dairy = "Yes";
-                    }else {
-                        dairy= "Error getting details";
-                    }
-                    var gluten = details.rows[0].gluten;
-                    if (gluten ==false){
+                    }else{
+                        dairy="Error"
+                    };
+                   
+                    if (gluten === false){
                         gluten = "None";
-                    }else if (soy ==true){
+                    }else if (gluten === true){
                         gluten = "Yes";
-                    }else {
-                        gluten= "Error getting details";
-                    }
+                    }else{
+                        gluten="Error"
+                    };
                     var rating = details.rows[0].rating;
                         
                     table += "<p>Soy: " + soy +"</p><p>Dairy: "+ dairy+"</p><p>Gluten: "+gluten+"</p><p>Rating: "+rating+"</p>"; 
